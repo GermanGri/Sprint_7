@@ -1,15 +1,13 @@
+import io.qameta.allure.Step;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
-import org.hamcrest.Matchers;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import ru.services.praktikum.scooter.qa.Order;
 
-import java.util.Collections;
-
+import static helper.Helper.*;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.hasKey;
 
@@ -24,7 +22,7 @@ public class OrdersCreatingTests {
 
     @Before
     public void setUp() {
-        RestAssured.baseURI = "https://qa-scooter.praktikum-services.ru/";
+        RestAssured.baseURI = BASE_URI;
     }
 
     @Parameterized.Parameters(name = "Тестовые данные")
@@ -38,9 +36,10 @@ public class OrdersCreatingTests {
     }
 
     @Test
+    @Step("Positive: Creating orders")
     public void testCreatingOrder() {
         Response response = given()
-                .header("Content-type", "application/json")
+                .header(CONTENT_TYPE_LABEL, CONTENT_TYPE_VALUE)
                 .body(order)
                 .when()
                 .post("/api/v1/orders")

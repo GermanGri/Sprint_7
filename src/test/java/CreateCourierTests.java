@@ -2,12 +2,9 @@ import io.qameta.allure.Step;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.RestAssured;
 import org.hamcrest.Matchers;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import ru.services.praktikum.scooter.qa.Courier;
-
-import java.util.Random;
 
 import static helper.Helper.*;
 import static io.restassured.RestAssured.given;
@@ -42,12 +39,11 @@ public class CreateCourierTests {
                 .body(courier)
                 .when()
                 .post(COURIER_URL)
-                .then().assertThat().statusCode(409).and().body(MESSAGE_LABEL, Matchers.is("Этот логин уже используется. Попробуйте другой."));
+                .then().assertThat().statusCode(409).and().body(MESSAGE_LABEL, Matchers.is(ERROR_MESSAGE_THIS_LOGIN_USED));
     }
 
-
     @Test
-    @DisplayName("Negative: Creation courier without field")
+    @Step("Negative: Creation courier without field")
     public void testCreateCourierWithoutField() {
         Courier courier = new Courier(null, randomPassword, randomFirstName);
         given()
@@ -59,6 +55,7 @@ public class CreateCourierTests {
     }
 
     @Test
+    @Step("Negative: Creation courier without one value")
     public void testCreateCourierOneValue() {
         Courier courier = new Courier(randomLogin, "", randomFirstName);
         given()
@@ -70,6 +67,7 @@ public class CreateCourierTests {
     }
 
     @Test
+    @Step("Negative: Creation courier with used login")
     public void testCreateCourierWithUsedLogin() {
         getCourier("FirstRandomPassword", "randomFirstName");
         Courier courierWithSameLogin = new Courier(randomLogin, "randomPassword", "randomFirstName");
@@ -78,7 +76,7 @@ public class CreateCourierTests {
                 .body(courierWithSameLogin)
                 .when()
                 .post(COURIER_URL)
-                .then().assertThat().statusCode(409).and().body(MESSAGE_LABEL, Matchers.is("Этот логин уже используется. Попробуйте другой."));
+                .then().assertThat().statusCode(409).and().body(MESSAGE_LABEL, Matchers.is(ERROR_MESSAGE_THIS_LOGIN_USED));
 
     }
     @Step("Positive: Create Courier")
